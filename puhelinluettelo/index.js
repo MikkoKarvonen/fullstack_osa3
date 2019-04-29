@@ -19,6 +19,11 @@ let notes = [
     },
 ]
 
+app.get('/info', (req, res) => {
+    res.send(`<p>Puhelinluettelossa ${notes.length} henkilön tiedot</p>`+
+             `<p>${new Date()}</p>`)
+})
+
 app.get('/api/persons', (req, res) => {
     res.json(notes)
 })
