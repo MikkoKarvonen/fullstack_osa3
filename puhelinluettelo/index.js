@@ -1,8 +1,10 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
 app.use(bodyParser.json())
+app.use(morgan('tiny'))
 
 let numbers = [
     {
@@ -46,7 +48,7 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
     const body = req.body
-    
+
     if (!body.name) {
         return res.status(400).json({
             error: 'name is missing'
