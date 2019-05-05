@@ -16,6 +16,7 @@ app.use(morgan((tokens, req, res) => {
         tokens.method(req, res) === 'POST' ? JSON.stringify(req.body) : ''
     ].join(' ')
 }))
+app.use(express.static('build'))
 
 let numbers = [
     {
