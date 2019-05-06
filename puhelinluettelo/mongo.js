@@ -1,9 +1,3 @@
-// node mongo.js salasana Joulupukki 040-1234556
-// node mongo.js salasana "Arto Vihavainen" 040-1234556
-// > lisätään Joulupukki numero 040-1234556 luetteloon
-// node mongo.js salasana
-// > puhelinluettelo:
-
 const mongoose = require('mongoose')
 
 if (process.argv.length < 3) {
