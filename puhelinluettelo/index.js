@@ -7,7 +7,9 @@ const cors = require('cors')
 const Number = require('./models/number')
 
 app.use(cors())
+app.use(express.static('build'))
 app.use(bodyParser.json())
+app.use(logger)
 app.use(morgan((tokens, req, res) => {
     return [
         tokens.method(req, res),
@@ -18,7 +20,6 @@ app.use(morgan((tokens, req, res) => {
         tokens.method(req, res) === 'POST' ? JSON.stringify(req.body) : ''
     ].join(' ')
 }))
-app.use(express.static('build'))
 
 let numbers = [
     {
@@ -65,6 +66,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
         .then(r => {
             res.status(204).end()
         })
+        .catch(error => next(error))
 })
 
 app.post('/api/persons', (req, res) => {
