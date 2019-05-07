@@ -49,17 +49,22 @@ app.get('/api/persons/', (req, res) => {
     })
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     Number.findById(req.params.id).then(number => {
-        res.json(number.toJSON())
+        if (number) {
+            res.json(number.toJSON())
+          } else {
+            res.status(204).end()
+          }
     })
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id);
-    numbers = numbers.filter(numbers => numbers.id !== id);
-
-    res.status(204).end();
+app.delete('/api/persons/:id', (req, res, next) => {
+    Number.findByIdAndRemove(req.params.id)
+        .then(r => {
+            res.status(204).end()
+        })
 })
 
 app.post('/api/persons', (req, res) => {
