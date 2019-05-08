@@ -6,6 +6,14 @@ const morgan = require('morgan')
 const cors = require('cors')
 const Number = require('./models/number')
 
+const logger = (request, response, next) => {
+    console.log('Method:', request.method)
+    console.log('Path:  ', request.path)
+    console.log('Body:  ', request.body)
+    console.log('---')
+    next()
+}
+
 app.use(cors())
 app.use(express.static('build'))
 app.use(bodyParser.json())
@@ -54,11 +62,11 @@ app.get('/api/persons/:id', (req, res, next) => {
     Number.findById(req.params.id).then(number => {
         if (number) {
             res.json(number.toJSON())
-          } else {
+        } else {
             res.status(204).end()
-          }
+        }
     })
-    .catch(error => next(error))
+        .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
@@ -69,7 +77,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
         .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const body = req.body
 
     if (!body.name) {
@@ -92,10 +100,24 @@ app.post('/api/persons', (req, res) => {
         id: Math.floor(Math.random() * 2000) + 1000,
     })
 
-    number.save().then(savedNumber => {
-        res.json(savedNumber.toJSON())
-    })
+    number.save()
+        .then(savedNumber => {
+            res.json(savedNumber.toJSON())
+        })
+        .catch(error => next(error))
 })
+
+const errorHandler = (error, req, res, next) => {
+    console.error(error.message)
+
+    if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: 'Error 400 '+error.message })
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
